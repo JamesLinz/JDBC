@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import com.mysql.cj.xdevapi.PreparableStatement;
 
 import db.DB;
+import db.DbIntegrityException;
 
 public class Program {
 
@@ -18,20 +19,18 @@ public class Program {
 			conn = DB.getConnection();
 			
 			st = conn.prepareStatement(
-					"UPDATE SELLER "
-					+ "SET BaseSalary = BaseSalary + ? "
+					"DELETE FROM seller "
 					+ "WHERE "
-					+ "(DepartmentId = ?)");
+					+ "Id = ?");
 			
-			st.setDouble(1, 300.0);
-			st.setInt(2, 2);
+			st.setInt(1, 8);
 			
 			int rowsAffected = st.executeUpdate();
 			
 			System.out.println("Pronto! Linhas afetadas: " + rowsAffected);
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			throw new DbIntegrityException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
